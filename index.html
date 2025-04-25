@@ -1,6 +1,24 @@
-
-
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>README</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        pre code {
+            background: #f4f4f4;
+            padding: 10px;
+            display: block;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
 <!-- </img> -->
 <div align="center"> <img src="./img/logo.jpg" width="400px"></div>
 
@@ -30,8 +48,8 @@ Resolve the GitHub-related domain name into the correct IP address, and then fil
 ## Usage
 >Tip: run with admin permission, beacase the `/etc/hosts` file need to be modified.
 
-``` bash
-# Download this repo to local
+
+<pre class="codehilite"><code class="language-bash"># Download this repo to local
 git clone https://github.com/jvxiao/speed-github.git
 cd speed-github
 
@@ -40,8 +58,9 @@ pip install -r requirements.txt
 
 # run
 python ./src/main.py
+</code></pre>
 
-```
+
 
 ## github-hosts
 
@@ -49,8 +68,8 @@ After executing the above command, your hosts file will add the following conten
 
 Or you can choose to copy the following content into your hosts file, and manually refresh local DNS with  `ipconfig /flushdns`
 
-```
-# Gennerate by Speed-github
+
+<pre class="codehilite"><code># Gennerate by Speed-github
 185.199.108.154                github.githubassets.com
 140.82.113.22                  central.github.com
 185.199.108.133                desktop.githubusercontent.com
@@ -84,4 +103,6 @@ Or you can choose to copy the following content into your hosts file, and manual
 
 # Last modified 2025-04-25 11:04:15
 # Star repo at https://github.com/jvxiao/speed-github
-```
+</code></pre>
+</body>
+</html>
