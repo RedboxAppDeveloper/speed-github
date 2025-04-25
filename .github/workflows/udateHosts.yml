@@ -5,15 +5,17 @@ name: Update hosts
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "page" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "page" ]
   schedule:
     - cron: "0 */2 * * *"
 
+permissions:
+  contents: write  # ✅ 关键：允许 GITHUB_TOKEN 推送代码
+
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -22,36 +24,42 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: udate hosts
+        pip install -r requirements.txt || true
+
+    - name: Update hosts
       run: |
-        if [ -f ./src/update/updateReadme.py ]; then python ./src/update/updateReadme.py;  fi
-        
-    - name: commit
+        if [ -f ./src/update/updateReadme.py ]; then python ./src/update/updateReadme.py; fi
+
+    - name: Generate index.html from README.md
+      run: |
+        if [ -f ./src/update/generate_index_html.py ]; then python ./src/update/generate_index_html.py; fi
+
+    - name: Commit changes
       id: commit
       run: |
-       git config --global user.email "github-actions[bot]@users.noreply.github.com"
-       git config --global user.name "GitHub Actions [Bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git config --global user.name "GitHub Actions [Bot]"
         git add .
+
         if git diff-index --quiet HEAD --; then
-            echo "No changes to commit"
-          else
-            git commit -m "[actions bot]: update hosts and readme"
-          fi
-      continue-on-error: true
-      
-    - name: Check on failures
-      if: steps.commit.outputs.status == 'failure'
-      run: exit 1
-      
+          echo "No changes to commit"
+          echo "has_changes=false" >> $GITHUB_ENV
+        else
+          git commit -m "[actions bot]: update hosts and readme"
+          echo "has_changes=true" >> $GITHUB_ENV
+        fi
+
     - name: Push changes
+      if: env.has_changes == 'true'
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
