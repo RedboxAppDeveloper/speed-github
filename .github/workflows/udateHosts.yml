@@ -12,7 +12,7 @@ on:
     - cron: "0 */2 * * *"
 
 permissions:
-  contents: write  # ✅ 关键：允许 GITHUB_TOKEN 推送代码
+  contents: write
 
 jobs:
   build:
@@ -24,6 +24,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
@@ -63,3 +65,4 @@ jobs:
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: page
